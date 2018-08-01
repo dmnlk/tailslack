@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/nlopes/slack"
-	"os"
-	"log"
-			"github.com/fatih/color"
 	"fmt"
-	"time"
+	"github.com/fatih/color"
+	"github.com/nlopes/slack"
 	"github.com/patrickmn/go-cache"
-	)
+	"log"
+	"os"
+	"time"
+)
 
 func main() {
 	token := os.Getenv("SLACK_API_TOKEN")
@@ -26,10 +26,9 @@ func main() {
 		//fmt.Print("Event Received: ")
 		switch ev := msg.Data.(type) {
 
-
 		case *slack.MessageEvent:
 			//pp.Println(ev)
-		// subtype == bot_message
+			// subtype == bot_message
 			var user_name = ""
 			if len(ev.Text) == 0 {
 				continue
@@ -59,7 +58,7 @@ func main() {
 			color.Set(color.FgHiYellow)
 			fmt.Print(channel.Name + ":")
 			color.Set(color.FgHiMagenta)
-			fmt.Print(user_name + ":" )
+			fmt.Print(user_name + ":")
 			color.White(ev.Text)
 		case *slack.InvalidAuthEvent:
 			os.Exit(0)
@@ -73,28 +72,28 @@ func main() {
 	}
 }
 
-func getUserInfo(c* cache.Cache, api* slack.Client, user_id string) (*slack.User, error)  {
-	key :=  "user-" + user_id
-	if v, f := c.Get(key);  f {
+func getUserInfo(c *cache.Cache, api *slack.Client, user_id string) (*slack.User, error) {
+	key := "user-" + user_id
+	if v, f := c.Get(key); f {
 		return v.(*slack.User), nil
 	}
-	user, err :=api.GetUserInfo(user_id)
+	user, err := api.GetUserInfo(user_id)
 	if err != nil {
-		return nil , err
+		return nil, err
 	}
 	c.Set(key, user, cache.NoExpiration)
-	return  user, nil
+	return user, nil
 }
 
-func getChannelInfo(c* cache.Cache, api* slack.Client, channel_id string) (*slack.Channel, error)  {
-	key :=  "channel-" + channel_id
-	if v, f := c.Get(key);  f {
+func getChannelInfo(c *cache.Cache, api *slack.Client, channel_id string) (*slack.Channel, error) {
+	key := "channel-" + channel_id
+	if v, f := c.Get(key); f {
 		return v.(*slack.Channel), nil
 	}
-	channel, err :=api.GetChannelInfo(channel_id)
+	channel, err := api.GetChannelInfo(channel_id)
 	if err != nil {
-		return nil , err
+		return nil, err
 	}
 	c.Set(key, channel, cache.NoExpiration)
-	return  channel, nil
+	return channel, nil
 }
