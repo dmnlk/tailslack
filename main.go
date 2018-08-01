@@ -42,6 +42,7 @@ func main() {
 			}
 			if len(user_name) == 0 {
 				user, err := getUserInfo(cache, api, ev.User)
+
 				if err != nil {
 					continue
 				}
@@ -51,12 +52,17 @@ func main() {
 			color.Set(color.FgGreen)
 			fmt.Print(time.Now().Format("2006/01/02 Mon 15:04:05") + ":")
 
+			var chan_name = ""
 			channel, err := getChannelInfo(cache, api, ev.Channel)
 			if err != nil {
-				continue
+				color.Set(color.FgRed)
+				chan_name = "[DM] by " + user_name
+			} else {
+				color.Set(color.FgHiYellow)
+				chan_name = channel.Name
 			}
-			color.Set(color.FgHiYellow)
-			fmt.Print(channel.Name + ":")
+
+			fmt.Print(chan_name + ":")
 			color.Set(color.FgHiMagenta)
 			fmt.Print(user_name + ":")
 			color.White(ev.Text)
