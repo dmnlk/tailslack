@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 	"github.com/patrickmn/go-cache"
-)
+	)
 
 func main() {
 	token := os.Getenv("SLACK_API_TOKEN")
@@ -28,18 +28,27 @@ func main() {
 
 
 		case *slack.MessageEvent:
-		//	pp.Println(ev)
+			//pp.Println(ev)
 		// subtype == bot_message
+			var user_name = ""
 			if len(ev.Text) == 0 {
 				continue
 			}
 			if len(ev.User) == 0 {
-				continue
+				if len(ev.Username) == 0 {
+					continue
+				}
+				// bot name
+				user_name = ev.Username
 			}
-			user, err := getUserInfo(cache, api, ev.User)
-			if err != nil {
-				continue
+			if len(user_name) == 0 {
+				user, err := getUserInfo(cache, api, ev.User)
+				if err != nil {
+					continue
+				}
+				user_name = user.Name
 			}
+
 			color.Set(color.FgGreen)
 			fmt.Print(time.Now().Format("2006/01/02 Mon 15:04:05") + ":")
 
@@ -50,7 +59,7 @@ func main() {
 			color.Set(color.FgHiYellow)
 			fmt.Print(channel.Name + ":")
 			color.Set(color.FgHiMagenta)
-			fmt.Print(user.Name + ":" )
+			fmt.Print(user_name + ":" )
 			color.White(ev.Text)
 		case *slack.InvalidAuthEvent:
 			os.Exit(0)
