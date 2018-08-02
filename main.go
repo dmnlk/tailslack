@@ -46,7 +46,7 @@ func main() {
 				if err != nil {
 					continue
 				}
-				user_name = user.RealName
+				user_name = user.Profile.DisplayName
 			}
 
 			color.Set(color.FgGreen)
