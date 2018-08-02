@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"bufio"
 )
 
 func main() {
@@ -21,7 +22,12 @@ func main() {
 	go rtm.ManageConnection()
 
 	cache := cache.New(cache.NoExpiration, cache.NoExpiration)
-
+	scaner := bufio.NewScanner(os.Stdin)
+	go func() {
+		for scaner.Scan()  {
+			fmt.Println(scaner.Text())
+		}
+	}()
 	for msg := range rtm.IncomingEvents {
 		//fmt.Print("Event Received: ")
 		switch ev := msg.Data.(type) {
