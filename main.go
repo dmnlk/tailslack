@@ -67,6 +67,7 @@ func main() {
 			fmt.Print(user_name + ":")
 			color.White(ev.Text)
 		case *slack.InvalidAuthEvent:
+			fmt.Printf("Error %#v\n", fmt.Errorf("Error: %s\n", "Auth Error"))
 			os.Exit(0)
 			return
 
