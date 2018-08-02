@@ -52,17 +52,17 @@ func main() {
 			color.Set(color.FgGreen)
 			fmt.Print(time.Now().Format("2006/01/02 Mon 15:04:05") + ":")
 
-			var chan_name = ""
+			var channelName = ""
 			channel, err := getChannelInfo(cache, api, ev.Channel)
 			if err != nil {
 				color.Set(color.FgRed)
-				chan_name = "[DM] by " + user_name
+				channelName = "[DM] by " + user_name
 			} else {
 				color.Set(color.FgHiYellow)
-				chan_name = channel.Name
+				channelName = channel.Name
 			}
 
-			fmt.Print(chan_name + ":")
+			fmt.Print(channelName + ":")
 			color.Set(color.FgHiMagenta)
 			fmt.Print(user_name + ":")
 			color.White(ev.Text)
@@ -78,12 +78,12 @@ func main() {
 	}
 }
 
-func getUserInfo(c *cache.Cache, api *slack.Client, user_id string) (*slack.User, error) {
-	key := "user-" + user_id
+func getUserInfo(c *cache.Cache, api *slack.Client, userId string) (*slack.User, error) {
+	key := "user-" + userId
 	if v, f := c.Get(key); f {
 		return v.(*slack.User), nil
 	}
-	user, err := api.GetUserInfo(user_id)
+	user, err := api.GetUserInfo(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -91,12 +91,12 @@ func getUserInfo(c *cache.Cache, api *slack.Client, user_id string) (*slack.User
 	return user, nil
 }
 
-func getChannelInfo(c *cache.Cache, api *slack.Client, channel_id string) (*slack.Channel, error) {
-	key := "channel-" + channel_id
+func getChannelInfo(c *cache.Cache, api *slack.Client, channelId string) (*slack.Channel, error) {
+	key := "channel-" + channelId
 	if v, f := c.Get(key); f {
 		return v.(*slack.Channel), nil
 	}
-	channel, err := api.GetChannelInfo(channel_id)
+	channel, err := api.GetChannelInfo(channelId)
 	if err != nil {
 		return nil, err
 	}
