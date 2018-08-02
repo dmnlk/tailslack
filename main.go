@@ -53,6 +53,9 @@ func main() {
 					continue
 				}
 				user_name = user.Profile.DisplayName
+				if len(user_name) == 0 {
+					user_name = user.Name
+				}
 			}
 
 			color.Set(color.FgGreen)
