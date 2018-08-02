@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 	"bufio"
+	"strings"
 )
 
 func main() {
@@ -25,7 +26,18 @@ func main() {
 	scaner := bufio.NewScanner(os.Stdin)
 	go func() {
 		for scaner.Scan()  {
-			fmt.Println(scaner.Text())
+			input := strings.Fields(scaner.Text())
+			if len(input) != 3 {
+				fmt.Println("argument count error")
+				continue
+			}
+			if input[0] != "/post" {
+				fmt.Println("invalid command")
+				continue
+			}
+
+			//postMessage
+			
 		}
 	}()
 	for msg := range rtm.IncomingEvents {
