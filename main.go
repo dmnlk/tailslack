@@ -27,6 +27,11 @@ func main() {
 	go func() {
 		for scaner.Scan()  {
 			input := strings.Fields(scaner.Text())
+
+			if len(input) == 0 {
+				// like tailf
+				continue
+			}
 			if len(input) != 3 {
 				fmt.Println("argument count error")
 				continue
@@ -37,7 +42,14 @@ func main() {
 			}
 
 			//postMessage
-			
+			params := slack.PostMessageParameters{}
+			params.AsUser = true
+			channelID, timestamp, err := api.PostMessage(input[1], input[2], params)
+			if err != nil {
+				fmt.Printf("%s\n", err)
+				return
+			}
+			fmt.Printf("Message successfully sent to channel %s at %s", channelID, timestamp)
 		}
 	}()
 	for msg := range rtm.IncomingEvents {
@@ -88,7 +100,8 @@ func main() {
 			fmt.Print(user_name + ":")
 			color.White(ev.Text)
 		case *slack.InvalidAuthEvent:
-			fmt.Printf("Error %#v\n", fmt.Errorf("Error: %s\n", "Auth Error"))
+            color.Set(color.FgRed)
+            fmt.Println("Auth Error!! Please Check SLACK_API_TOKEN")
 			os.Exit(0)
 			return
 
