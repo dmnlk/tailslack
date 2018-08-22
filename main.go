@@ -1,15 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/nlopes/slack"
 	"github.com/patrickmn/go-cache"
+	"gopkg.in/kyokomi/emoji.v1"
 	"log"
 	"os"
-	"time"
-	"bufio"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -25,7 +26,7 @@ func main() {
 	cache := cache.New(cache.NoExpiration, cache.NoExpiration)
 	scaner := bufio.NewScanner(os.Stdin)
 	go func() {
-		for scaner.Scan()  {
+		for scaner.Scan() {
 			input := strings.Fields(scaner.Text())
 
 			if len(input) == 0 {
@@ -98,10 +99,11 @@ func main() {
 			fmt.Print(channelName + ":")
 			color.Set(color.FgHiMagenta)
 			fmt.Print(user_name + ":")
-			color.White(ev.Text)
+			text := emoji.Sprint(ev.Text)
+			color.White(text)
 		case *slack.InvalidAuthEvent:
-            color.Set(color.FgRed)
-            fmt.Println("Auth Error!! Please Check SLACK_API_TOKEN")
+			color.Set(color.FgRed)
+			fmt.Println("Auth Error!! Please Check SLACK_API_TOKEN")
 			os.Exit(0)
 			return
 
