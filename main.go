@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"github.com/deckarep/gosx-notifier"
 )
 
 func main() {
@@ -19,6 +20,14 @@ func main() {
 	logger := log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags)
 	slack.SetLogger(logger)
 	api.SetDebug(false)
+
+	user, err := api.AuthTest()
+	if err != nil {
+		color.Set(color.FgRed)
+		log.Fatal("OAuthError!")
+	}
+	ownUserId := user.UserID
+	fmt.Printf("your user id is %s\n", ownUserId)
 
 	rtm := api.NewRTM()
 	go rtm.ManageConnection()
@@ -61,7 +70,8 @@ func main() {
 			//pp.Println(ev)
 			// subtype == bot_message
 			var user_name = ""
-			if len(ev.Text) == 0 {
+			text := ev.Text
+			if len(text) == 0 {
 				continue
 			}
 			if len(ev.User) == 0 {
@@ -99,8 +109,19 @@ func main() {
 			fmt.Print(channelName + ":")
 			color.Set(color.FgHiMagenta)
 			fmt.Print(user_name + ":")
-			text := emoji.Sprint(ev.Text)
-			color.White(text)
+			var orgText  = text
+			formatedText := emoji.Sprint(text)
+			color.White(formatedText)
+			if strings.Contains(text, ownUserId) || strings.Contains(text, "<!here>") || strings.Contains(text, "<!channel>") {
+				notification := gosxnotifier.NewNotification(orgText) // don't show message why?
+				notification.Title = channelName
+				notification.Subtitle = user_name
+				notification.AppIcon = "icon.png"
+				notification.Sound = gosxnotifier.Default
+				notification.Push()
+			}
+
+
 		case *slack.InvalidAuthEvent:
 			color.Set(color.FgRed)
 			fmt.Println("Auth Error!! Please Check SLACK_API_TOKEN")
